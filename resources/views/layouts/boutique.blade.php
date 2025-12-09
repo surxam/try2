@@ -16,8 +16,14 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 <body>
-    <x-navigation />
-        
+    <main id="content">
+        <x-navigation />
+        <div>
+            @yield('content')
+        </div>
+
+       
+    </main>    
          
     
     
