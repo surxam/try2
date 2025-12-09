@@ -18,10 +18,10 @@
 <body>
     <main id="content">
         <x-navigation />
+        
         <div>
             @yield('content')
         </div>
-
        
     </main>    
          
