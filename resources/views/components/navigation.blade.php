@@ -315,19 +315,117 @@
                 
             </div>
 
-    
-
-           
+ 
 
             <!-- Cart -->
-            <div class="ml-4 flow-root lg:ml-6">
-              <a href="#" class="group -m-2 flex items-center p-2">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500">
+            @auth
+            <div class="ml- flow-root lg:ml-6">
+        
+        <button command="show-modal" commandfor="drawer" class="rounded-md border-red-900 bg-gray-950/5 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-950/10">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500">
                   <path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
-                <span class="sr-only">items in cart, view bag</span>
-              </a>
+                  @if(auth()->user()->cart && auth()->user()->cart->total_items > 0)
+                            <span class=" text-sm font-medium text-gray-700 group-hover:text-gray-800">{{ auth()->user()->cart->total_items }}</span>
+                      @endif
+                @endauth
+        </button>
+
+
+            <el-dialog>
+                <dialog id="drawer" aria-labelledby="drawer-title" class="fixed inset-0 size-auto max-h-none max-w-none overflow-hidden bg-transparent not-open:hidden backdrop:bg-transparent">
+                    <el-dialog-backdrop class="absolute inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0"></el-dialog-backdrop>
+
+                    <div tabindex="0" class="absolute inset-0 pl-10 focus:outline-none sm:pl-16">
+                        <el-dialog-panel class="ml-auto block size-full max-w-md transform transition duration-500 ease-in-out data-closed:translate-x-full sm:duration-700">
+                            <div class="flex h-full flex-col overflow-y-auto bg-white shadow-xl">
+                                <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                                    <div class="flex items-start justify-between">
+                                        <h2 id="drawer-title" class="text-lg font-medium text-gray-900">Panier</h2>
+                                        <div class="ml-3 flex h-7 items-center">
+                                            <button type="button" command="close" commandfor="drawer" class="relative -m-2 p-2 text-gray-400 hover:text-gray-500">
+                                                <span class="absolute -inset-0.5"></span>
+                                                <span class="sr-only">Close panel</span>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6">
+                                                    <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8">
+                                        <div class="flow-root">
+                                            <ul role="list" class="-my-6 divide-y divide-gray-200">
+                                               @auth
+                                                @if(auth()->user()->cart && auth()->user()->cart->items->isNotEmpty())
+                                                    @foreach (auth()->user()->cart->items as $item)
+                                                        <li class="flex py-6">
+                                                            <div class="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                                                <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-04-product-01.jpg" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="size-full object-cover" />
+                                                            </div>
+
+                                                            <div class="ml-4 flex flex-1 flex-col">
+                                                                <div>
+                                                                    <div class="flex justify-between text-base font-medium text-gray-900">
+                                                                        <h3>
+                                                                            <a href="#">{{ $item->product->name }}</a>
+                                                                        </h3>
+                                                                        <p class="ml-4">{{ number_format($item->product->price * $item->quantity, 2) }}</p>
+                                                                    </div>
+                                                                    <p class="mt-1 text-sm text-gray-500">{{ $item->product->category->name }}</p>
+                                                                </div>
+                                                                <div class="flex flex-1 items-end justify-between text-sm">
+                                                                    <p class="text-gray-500">Quantité(s): {{ $item->quantity }}</p>
+                                                                    <div class="flex">
+                                                                        <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                @else
+                                                    <li class="flex py-6">
+                                                        <p class="text-gray-500">Votre panier est vide.</p>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                          @endauth
+
+                                <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
+                                  @auth
+                                    @if(auth()->user()->cart && auth()->user()->cart->items->isNotEmpty())
+                                        <div class="flex justify-between text-base font-medium text-gray-900">
+                                            <p>TOTAL</p>
+                                            <p>{{ number_format(auth()->user()->cart->items->sum(fn($item) => $item->product->price * $item->quantity), 2) }}</p>
+                                        </div>
+                                        <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+                                        <div class="mt-6">
+                                            <a href="{{route('cart.index')}}" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700">Checkout</a>
+                                        </div>
+                                    @endif
+
+
+                                    @endauth
+                                    <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+                                        <p>
+                                            or
+                                            <button type="button" command="close" commandfor="drawer" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                                Continue Shopping
+                                                <span aria-hidden="true"> &rarr;</span>
+                                            </button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-dialog-panel>
+                    </div>
+                </dialog>
+            </el-dialog>
+  
+             
             </div>
           </div>
         </div>

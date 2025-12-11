@@ -17,7 +17,8 @@
     </head>
 <body>
     <main id="content">
-        <x-navigation />
+
+                <x-navigation />    
         
         <div>
             @yield('content')
