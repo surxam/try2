@@ -1,35 +1,26 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.boutique')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Votre Panier</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
 
-<body class="bg-gray-50 min-h-screen">
+@section('content')
+
+
+
+<div class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- En-tête -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Mon Panier</h1>
-            <nav class="mt-4">
-                <a href="#" class="text-indigo-600 hover:text-indigo-800">← Continuer mes achats</a>
-            </nav>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Section des articles -->
             <div class="px-6 py-4">
-                <h2 class="text-2xl font-semibold text-gray-800">Votre Panier</h2>
-
                 @if ($cart->items->isEmpty())
                     <!-- Panier vide -->
                     <div class="text-center py-12">
                         <i class="fas fa-shopping-cart text-gray-300 text-6xl mb-4"></i>
                         <p class="text-gray-500 text-lg">Votre panier est vide</p>
-                        <a href="#" class="inline-block mt-4 px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                        <a href="{{route('home')}}" class="inline-block mt-4 px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                             Découvrir nos produits
                         </a>
                     </div>
@@ -49,7 +40,7 @@
                                         <h3 class="text-lg font-medium text-gray-900">{{ $item->product->name }}</h3>
                                         <p class="text-lg font-semibold text-gray-900">{{ $item->formatted_price }}</p>
                                     </div>
-                                    <p class="text-sm text-gray-500 mt-1"></p>
+                                    <p class="text-sm text-gray-500 mt-1">{{ $item->product->category->name  }}</p>
 
                                     <div class="flex justify-between items-center mt-2 text-sm text-gray-600">
                                         <!-- Quantité -->
@@ -67,8 +58,10 @@
                                         </div>
 
                                         <!-- Bouton "Supprimer" -->
-                                        <form method="POST" action="#">
-                                           
+                                        <form method="post" action="{{route('cart.remove', $item->id)}}">
+                                            @csrf
+                                            @method('DELETE')
+
                                             <button type="submit" class="text-red-600 hover:text-red-500">
                                                 <i class="fas fa-trash mr-1"></i> Supprimer
                                             </button>
@@ -87,7 +80,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between text-base text-gray-600">
                             <p>Sous-total</p>
-                            <p>{{ number_format($cart->subtotal, 2) }} €</p>
+                            <p>{{ $cart->formatted_subtotal }} €</p>
                         </div>
                         <div class="flex justify-between text-base text-gray-600">
                             <p>Frais de port estimés</p>
@@ -99,7 +92,7 @@
                     <div class="border-t border-gray-200 mt-4 pt-4">
                         <div class="flex justify-between text-lg font-bold text-gray-900">
                             <p>Total TTC</p>
-                            <p>{{ number_format($cart->total, 2) }} €</p>
+                            <p>{{ $cart->formatted_subtotal }} €</p>
                         </div>
                         <p class="mt-1 text-sm text-gray-500">Les frais de port et les taxes sont calculés à la caisse.</p>
                     </div>
@@ -107,12 +100,15 @@
                     <!-- Actions -->
                     <div class="mt-6 space-y-4">
 
-
                         <!-- Boutons d'action -->
                         <div class="flex space-x-4">
-                            <a href="#" class="flex-1 text-center px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                                Continuer mes achats
-                            </a>
+                            <form method="post" action="{{route('cart.clear',$item)}}">
+                                @csrf
+                                @method('delete')
+                                <button type="submit" class="flex-1 text-center px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                    Vider Panier
+                                </button>
+                            </form> 
                             <a href="#" class="flex-1 text-center px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                                 Passer la commande
                             </a>
@@ -160,3 +156,29 @@
 </body>
 
 </html>
+
+
+
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

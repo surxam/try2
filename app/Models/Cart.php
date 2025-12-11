@@ -29,6 +29,7 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
+
     /**
      * Nombre total d'articles dans le panier
      */
