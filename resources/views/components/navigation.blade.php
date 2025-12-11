@@ -41,6 +41,13 @@
                    <a href="{{route('profile.edit')}}" class="text-sm font-medium text-gray-700 hover:text-gray-800">Mon Compte</a>
                @endauth
             </div>
+            <div class="flow-root">
+              <span aria-hidden="true" class="h-6 w-px bg-gray-200"></span>
+                @auth
+                   <a href="{{route('cart.index')}}" class="text-sm font-medium text-gray-700 hover:text-gray-800">Mon Panier</a>
+               @endauth
+                
+            </div>
           </div>
 
         </el-dialog-panel>
@@ -311,6 +318,11 @@
               
                @auth
                    <a href="{{route('profile.edit')}}" class="text-sm font-medium text-gray-700 hover:text-gray-800">Mon Compte</a>
+               @endauth
+
+              <span aria-hidden="true" class="h-6 w-px bg-gray-200"></span>
+                @auth
+                   <a href="{{route('cart.index')}}" class="text-sm font-medium text-gray-700 hover:text-gray-800">Mon Panier</a>
                @endauth
                 
             </div>
