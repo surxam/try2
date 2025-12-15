@@ -27,7 +27,7 @@ class CustomerPanelProvider extends PanelProvider
             ->id('customer')
             ->path('customer')
             ->colors([
-                'primary' => Color::Green,
+                'primary' => Color::Blue,
             ])
             ->brandName('Espace Client')     // Nom affiché
             ->discoverResources(in: app_path('Filament/Customer/Resources'), for: 'App\Filament\Customer\Resources')
