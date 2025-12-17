@@ -135,10 +135,96 @@
             <p class="text-sm text-gray-600">The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming &quot;Charcoal Gray&quot; limited release.</p>
           </div>
         </div>
-      </div>
+      </div>    
     </div>
+    
+    <div class="bg-white">
+    <div class="sm:mx-auto  px-4 py-16 sm:px-6 lg:max-w-2xl lg:px-8">
+
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+            Donner votre avis sur <span class="text-indigo-600">{{ $product->name }}</span>
+        </h2>
+
+        <!-- Formulaire d'avis -->
+        <form action="#" method="POST" class="space-y-6">
+            @csrf
+            @method('POST')
+
+            <!-- Note -->
+            <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">
+                    Votre note
+                </label>
+
+                <div class="flex items-center space-x-2">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <label class="cursor-pointer">
+                            <input type="radio" name="rating" value="{{ $i }}" class="sr-only peer" required>
+                            <svg class="h-8 w-8 text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 transition"
+                                 fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"/>
+                            </svg>
+                        </label>
+                    @endfor
+                </div>
+
+                @error('rating')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Titre de l'avis -->
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-900">
+                    Titre de votre avis
+                </label>
+                <input type="text" name="title" id="title"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                       placeholder="Ex : Excellent produit"
+                       required>
+
+                @error('title')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Commentaire -->
+            <div>
+                <label for="comment" class="block text-sm font-medium text-gray-900">
+                    Votre commentaire
+                </label>
+                <textarea name="comment" id="comment" rows="5"
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          placeholder="Décrivez votre expérience avec ce produit..."
+                          required></textarea>
+
+                @error('comment')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Bouton -->
+            <div>
+                <button type="submit"
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-6 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Envoyer mon avis
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
   </div>
 </div>
+
+
+
+
+
+
+
 
 
 
