@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Review;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\OrderItem;
@@ -101,6 +102,13 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+
+
+     public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     /**

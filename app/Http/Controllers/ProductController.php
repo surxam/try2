@@ -79,6 +79,8 @@ class ProductController extends Controller
         // Charge les relations
         $product->load('category');
 
+         $reviews = $product->reviews()->with('user')->orderBy('created_at', 'desc')->paginate(3);
+
         // Produits similaires (même catégorie, max 4)
         $relatedProducts = Product::active()
             ->where('category_id', $product->category_id)
@@ -86,7 +88,7 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        return view('products.show', compact('product', 'relatedProducts','reviews'));
     }
 
     /**

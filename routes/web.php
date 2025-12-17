@@ -3,9 +3,10 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 
 // Page d'accueil
@@ -34,6 +35,14 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])
+    ->name('reviews.store');
+
+});
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
