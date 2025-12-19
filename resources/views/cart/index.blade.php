@@ -109,7 +109,7 @@
                                     Vider Panier
                                 </button>
                             </form> 
-                            <a href="#" class="flex-1 text-center px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            <a href="{{route('checkout.index')}}" class="flex-1 text-center px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                                 Passer la commande
                             </a>
                         </div>
