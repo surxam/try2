@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,8 +30,8 @@ class CheckoutController extends Controller
     }
 
 
-
-        public function index(){
+public function index()
+    {
         $cart = auth()->user()->cart;
 
         // Redirige si panier vide
@@ -78,10 +79,10 @@ class CheckoutController extends Controller
             }
 
             // Crée la commande
-            $order = Cart::create([
+            $order = Order::create([
                 'user_id' => auth()->id(),
                 'order_number' => 'CMD-' . strtoupper(uniqid()),
-                'status' => 'PENDING',
+                'status' => OrderStatus::PENDING,
                 'subtotal' => $cart->subtotal,
                 'tax' => $cart->tax,
                 'shipping' => $cart->shipping,
@@ -96,8 +97,8 @@ class CheckoutController extends Controller
 
             // Crée les items de commande et décrémente le stock
             foreach ($cart->items as $item) {
-                CartItem::create([
-                    'cart_id' => $cart->id,
+                OrderItem::create([
+                    'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'product_name' => $item->product->name,
                     'quantity' => $item->quantity,
@@ -109,12 +110,44 @@ class CheckoutController extends Controller
             }
 
             // Vide le panier
-            $cart->clear();
+            //$cart->clear();
 
             DB::commit();
+            
 
-            return redirect()->route('checkout.success', $order)
-                ->with('success', 'Commande passée avec succès !');
+
+            // 3. Créer la session de paiement Stripe
+        $checkout = auth()->user()->checkout([
+            [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Commande #' . $order->id,
+                        'description' => 'Paiement de votre commande',
+                    ],
+                    'unit_amount' => $order->total * 100, // montant en centimes
+                ],
+                'quantity' => 1,
+            ]
+        ], [
+            'success_url' => route('checkout.success', ['order' => $order->id]),
+            'cancel_url' => route('checkout.cancel', ['order' => $order->id]),
+            'metadata' => [
+                'order_id' => $order->id,
+            ],
+            'mode' => 'payment',
+        ]);
+        
+        // 4. Sauvegarder l'ID de session Stripe dans la commande
+        $order->update([
+            'stripe_checkout_session_id' => $checkout->id,
+        ]);
+        
+        // 5. Rediriger vers Stripe Checkout
+        return redirect($checkout->url);
+
+           /* return redirect()->route('checkout.success', $order)
+                ->with('success', 'Commande passée avec succès !');*/
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -129,12 +162,28 @@ class CheckoutController extends Controller
 
 
     //commande Validé
-     public function success (){
-        
-    }
+    public function success(Request $request, Order $order){
+        // récupérer session 
+        // récupérer id session stripe
+        //récupérer id commande
+
+        $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($order->stripe_checkout_session_id);
+
+        if($checkoutSession->payment_status === 'paid'){
+
+            $order->update([
+                'status'=>OrderStatus::CONFIRMED->value,
+                ''
+            ]); 
+        }
+
+
+           
+ }
 
     //commande Annulé
      public function cancel (){
-        
+        return redirect()->route('cart.index')
+        ->with('error', 'Paiement annulé.');
     }
 }
